@@ -30,9 +30,13 @@
       border: 1px solid black;
       text-align: center;
       vertical-align: middle;
-      font-size: 2vw;
+      font-size: 1.5vw;
+      line-height: 1;
       cursor: pointer;
       position: relative;
+      text-transform: uppercase;
+      word-wrap: break-word;
+      hyphens: auto;
     }
 
     .phrase, .mark {
@@ -46,8 +50,8 @@
     }
 
     .mark {
-      color: red;
-      font-size: 4vw;
+      color: hsla(189 27.7% 37.5% / 0.81);
+      font-size: 6vw;
       display: none; /* Hidden by default */
       font-family: poplar-std, sans-serif;
       font-weight: 400;
@@ -67,12 +71,22 @@
     }
 
     .overlay-content h1 {
-      color: gold;
-      font-size: 36px;
+      color: #45727a;
+      font-size: 6vw;
       margin: 10px 0;
       font-family: poplar-std, sans-serif;
       font-weight: 400;
       font-style: normal;
+    }
+    
+    h1 {
+      color: #45727a;
+      font-size: 6vw;
+      margin: 10px 0;
+      font-family: poplar-std, sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      text-transform: uppercase;
     }
 
     #share-message {
@@ -101,6 +115,8 @@
 <body>
   <!-- Bingo Grid -->
   <table id="bingo-grid">
+    <tr><h1>Collaboration Station</h1>
+    <tr>
     <tr>
       <td class="cell" data-row="0" data-col="0"><span class="phrase"></span><span class="mark">X</span></td>
       <td class="cell" data-row="0" data-col="1"><span class="phrase"></span><span class="mark">X</span></td>
@@ -141,7 +157,7 @@
   <!-- Bingo Overlay -->
   <div id="bingo-overlay" class="bingo-overlay">
     <div class="overlay-content">
-      <h1>BINGO! You Won!</h1>
+      <h1>BINGO!!</h1>
       <p>Take a screenshot of your winning board and post it below the space with the following:</p>
       <pre id="share-message">BINGO! @catebligh @cfryant @richsilverx ... I got BINGO!</pre>
       <button id="copy-button">Copy to Clipboard</button>
@@ -159,22 +175,22 @@
       "sudden dark turn",
       "What are you working on?",
       "z-list celebrity takes over space",
-      "cate mentions mom/boomers",
+      "cate mentions mom / boomers",
       "Chris gets jealous",
       "toxic positivity",
-      "Chris makes non sequitur joke, no one laughs",
+      "Chris says non sequitur joke and no one laughs",
       "AI can help with that",
       "Someone interrupts",
       "driving while talking",
       "Free!",
       "music interlude",
       "We can't hear you",
-      "conversation sidetracked",
-      "hot mic with animals in the background",
+      "convers-ation side-tracked",
+      "animals in the back-ground",
       "crazy person joins",
       "land my plane",
       "unrelated poll",
-      "Projectotron",
+      "Project-o-tron",
       "Cate loses train of thought",
       "Purple Pill",
       "making 1 quick point for 5 minutes",
