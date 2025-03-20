@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Podcast Bingo</title>
+  <style>
+    #bingo-grid {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80vw;
+      height: 80vw;
+      max-width: 500px;
+      max-height: 500px;
+      position: relative;
+    }
+
+    .cell {
+      border: 1px solid black;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 2vw;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .phrase, .mark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .mark {
+      color: red;
+      font-size: 4vw;
+      display: none; /* Hidden by default */
+    }
+
+    /* Overlay Styling */
+    .bingo-overlay {
+      display: none;
+      position: absolute;
+      top: 100%; /* Position below the grid */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80vw;
+      max-width: 500px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      z-index: 1000;
+    }
+
+    .overlay-content h1 {
+      color: gold;
+      font-size: 36px;
+      margin: 10px 0;
+    }
+
+    #share-message {
+      white-space: pre-wrap;
+      margin: 10px 0;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background-color: #f9f9f9;
+    }
+
+    #copy-button, #close-overlay {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Bingo Grid with spans for phrases and marks -->
+  <table id="bingo-grid">
+    <tr>
+      <td class="cell" data-row="0" data-col="0"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="0" data-col="1"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="0" data-col="2"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="0" data-col="3"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="0" data-col="4"><span class="phrase"></span><span class="mark">X</span></td>
+    </tr>
+    <tr>
+      <td class="cell" data-row="1" data-col="0"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="1" data-col="1"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="1" data-col="2"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="1" data-col="3"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="1" data-col="4"><span class="phrase"></span><span class="mark">X</span></td>
+    </tr>
+    <tr>
+      <td class="cell" data-row="2" data-col="0"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="2" data-col="1"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="2" data-col="2"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="2" data-col="3"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="2" data-col="4"><span class="phrase"></span><span class="mark">X</span></td>
+    </tr>
+    <tr>
+      <td class="cell" data-row="3" data-col="0"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="3" data-col="1"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="3" data-col="2"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="3" data-col="3"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="3" data-col="4"><span class="phrase"></span><span class="mark">X</span></td>
+    </tr>
+    <tr>
+      <td class="cell" data-row="4" data-col="0"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="4" data-col="1"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="4" data-col="2"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="4" data-col="3"><span class="phrase"></span><span class="mark">X</span></td>
+      <td class="cell" data-row="4" data-col="4"><span class="phrase"></span><span class="mark">X</span></td>
+    </tr>
+  </table>
+
+  <!-- Bingo Overlay -->
+  <div id="bingo-overlay" class="bingo-overlay">
+    <div class="overlay-content">
+      <h1>BINGO! You Won!</h1>
+      <p>Take a screenshot of your winning board and post it below the space with the following:</p>
+      <pre id="share-message">BINGO! @catebligh @cfryant @richsilverx ... I got BINGO!</pre>
+      <button id="copy-button">Copy to Clipboard</button>
+      <button id="close-overlay">Close</button>
+    </div>
+  </div>
+
+  <!-- External Libraries and Script -->
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+  <script>
+    // Define 24 generic phrases (replace with podcast-specific phrases later)
+    const phrases = Array.from({ length: 24 }, (_, i) => `Phrase ${i + 1}`);
+
+    // Shuffle function
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle phrases
+    const shuffledPhrases = shuffle([...phrases]);
+
+    // Initialize 5x5 marked array (all false except center)
+    const marked = Array(5).fill().map(() => Array(5).fill(false));
+
+    // Populate the grid and add interactivity
+    const cells = document.querySelectorAll('#bingo-grid .cell');
+    let phraseIndex = 0;
+    cells.forEach(cell => {
+      const row = parseInt(cell.dataset.row);
+      const col = parseInt(cell.dataset.col);
+      const phraseSpan = cell.querySelector('.phrase');
+      const markSpan = cell.querySelector('.mark');
+
+      if (row === 2 && col === 2) {
+        phraseSpan.textContent = "FREE";
+        markSpan.style.display = 'block'; // Show 'X' for FREE
+        marked[row][col] = true;
+      } else {
+        phraseSpan.textContent = shuffledPhrases[phraseIndex++];
+        markSpan.style.display = 'none'; // Hide 'X' initially
+        marked[row][col] = false;
+      }
+
+      cell.addEventListener('click', () => {
+        if (row === 2 && col === 2) return; // "FREE" can't be unmarked
+        marked[row][col] = !marked[row][col];
+        markSpan.style.display = marked[row][col] ? 'block' : 'none';
+        checkBingo();
+      });
+    });
+
+    // Bingo checking functions
+    function isRowBingo(row) {
+      return marked[row].every(val => val);
+    }
+
+    function isColBingo(col) {
+      return marked.every(row => row[col]);
+    }
+
+    function isMainDiagonalBingo() {
+      return [0, 1, 2, 3, 4].every(i => marked[i][i]);
+    }
+
+    function isAntiDiagonalBingo() {
+      return [0, 1, 2, 3, 4].every(i => marked[i][4 - i]);
+    }
+
+    function checkBingo() {
+      for (let i = 0; i < 5; i++) {
+        if (isRowBingo(i) || isColBingo(i)) {
+          showBingoOverlay();
+          return;
+        }
+      }
+      if (isMainDiagonalBingo() || isAntiDiagonalBingo()) {
+        showBingoOverlay();
+      }
+    }
+
+    // Show bingo overlay
+    function showBingoOverlay() {
+      document.getElementById("bingo-overlay").style.display = "block";
+    }
+
+    // Close overlay
+    document.getElementById("close-overlay").addEventListener("click", () => {
+      document.getElementById("bingo-overlay").style.display = "none";
+    });
+
+    // Enable clipboard copying
+    new ClipboardJS('#copy-button', {
+      text: function() {
+        return document.getElementById("share-message").textContent;
+      }
+    });
+  </script>
+</body>
+</html>
