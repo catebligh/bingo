@@ -133,8 +133,34 @@
   <!-- External Libraries and Script -->
   <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
   <script>
-    // Define 24 generic phrases (replace with podcast-specific phrases later)
-    const phrases = Array.from({ length: 24 }, (_, i) => `Phrase ${i + 1}`);
+    // Define the new phrases
+    const phrases = [
+      "squabble breaks out",
+      "thirsty Europeans",
+      "sudden dark turn",
+      "What are you working on?",
+      "z-list celebrity takes over space",
+      "cate mentions mom/boomers",
+      "Chris gets jealous",
+      "toxic positivity",
+      "Chris makes non sequitur joke, no one laughs",
+      "AI can help with that",
+      "Someone interrupts",
+      "driving while talking",
+      "Free!",
+      "music interlude",
+      "We can't hear you",
+      "conversation sidetracked",
+      "hot mic with animals in the background",
+      "crazy person joins",
+      "land my plane",
+      "unrelated poll",
+      "Projectotron",
+      "Cate loses train of thought",
+      "Purple Pill",
+      "making 1 quick point for 5 minutes",
+      "spaces glitch"
+    ];
 
     // Shuffle function
     function shuffle(array) {
@@ -148,30 +174,35 @@
     // Shuffle phrases
     const shuffledPhrases = shuffle([...phrases]);
 
-    // Initialize 5x5 marked array (all false except center)
+    // Initialize 5x5 marked array (all false initially)
     const marked = Array(5).fill().map(() => Array(5).fill(false));
 
     // Populate the grid and add interactivity
     const cells = document.querySelectorAll('#bingo-grid .cell');
-    let phraseIndex = 0;
     cells.forEach(cell => {
       const row = parseInt(cell.dataset.row);
       const col = parseInt(cell.dataset.col);
       const phraseSpan = cell.querySelector('.phrase');
       const markSpan = cell.querySelector('.mark');
 
+      // Assign "Free!" to the center cell and mark it
       if (row === 2 && col === 2) {
-        phraseSpan.textContent = "FREE";
-        markSpan.style.display = 'block'; // Show 'X' for FREE
+        phraseSpan.textContent = "Free!";
+        markSpan.style.display = 'block'; // Show 'X' for Free!
         marked[row][col] = true;
       } else {
-        phraseSpan.textContent = shuffledPhrases[phraseIndex++];
+        // Assign shuffled phrases, skipping "Free!" if it appears elsewhere
+        let phrase = shuffledPhrases.shift();
+        if (phrase === "Free!" && (row !== 2 || col !== 2)) {
+          phrase = shuffledPhrases.shift(); // Skip "Free!" for non-center cells
+        }
+        phraseSpan.textContent = phrase;
         markSpan.style.display = 'none'; // Hide 'X' initially
         marked[row][col] = false;
       }
 
       cell.addEventListener('click', () => {
-        if (row === 2 && col === 2) return; // "FREE" can't be unmarked
+        if (row === 2 && col === 2) return; // "Free!" can't be unmarked
         marked[row][col] = !marked[row][col];
         markSpan.style.display = marked[row][col] ? 'block' : 'none';
         checkBingo();
